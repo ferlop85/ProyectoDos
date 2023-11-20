@@ -10,13 +10,13 @@ def menu():
         print("1. Cargar imagen")
         print("2. Mostrar imagen original")
         print("3. Ajustar imagen con histograma")
-        print("31. Ajustar imagen con histograma propio")
-        print("4. Aplicar filtro")
-        print("5. Hacer boceto")
-        print("6. Mostrar imagen modificada")
-        print('7. Recargar imagen orginal')
-        print('8. Guardar imagen como "MiImagen.jpg"')
-        print("9. Salir")
+        print("4. Ajustar imagen con histograma propio")
+        print("5. Aplicar filtro")
+        print("6. Hacer boceto")
+        print("7. Mostrar imagen modificada")
+        print('8. Recargar imagen orginal')
+        print('9. Guardar imagen como "MiImagen.jpg"')
+        print("10. Salir")
 
         opcion = input("Ingrese el número de la opción: ")
 
@@ -38,12 +38,12 @@ def menu():
                 print("Primero debes cargar una imagen. Usa la opción '1' para cargar una imagen.")
             else:
                 imagen_modificada = ajustar_contraste_histograma(imagen_modificada)
-        elif opcion == "31":
+        elif opcion == "4":
             if imagen_original == None:
                 print("Primero debes cargar una imagen. Usa la opción '1' para cargar una imagen.")
             else:
                 imagen_modificada = ajustar_contraste_histograma_propio(imagen_modificada)
-        elif opcion == "4":
+        elif opcion == "5":
             if imagen_original is None:
                 print("Primero debes cargar una imagen. Usa la opción '1' para cargar una imagen.")
             else:
@@ -52,27 +52,27 @@ def menu():
                 if filtro is not None:
                     imagen_modificada = aplicar_filtro(filtro, imagen_modificada)
                     print(f"Se ha aplicado el filtro '{filtro}'")
-        elif opcion == "5":
-            if imagen_original == None:
-                print("Primero debes cargar una imagen. Usa la opción '1' para cargar una imagen.")
-            else:
-                imagen_modificada = dibujar_boceto_persona(imagen_modificada, persona=True)
         elif opcion == "6":
             if imagen_original == None:
                 print("Primero debes cargar una imagen. Usa la opción '1' para cargar una imagen.")
             else:
-                mostrar_imagen_matplotlib(imagen_modificada, titulo="Imagen Modificada")
+                imagen_modificada = dibujar_boceto_persona(imagen_modificada, persona=True)
         elif opcion == "7":
-            if imagen_original is None:
+            if imagen_original == None:
                 print("Primero debes cargar una imagen. Usa la opción '1' para cargar una imagen.")
             else:
-                imagen_modificada = imagen_original.copy()
+                mostrar_imagen_matplotlib(imagen_modificada, titulo="Imagen Modificada")
         elif opcion == "8":
             if imagen_original is None:
                 print("Primero debes cargar una imagen. Usa la opción '1' para cargar una imagen.")
             else:
-                guardar_imagen(imagen_modificada)
+                imagen_modificada = imagen_original.copy()
         elif opcion == "9":
+            if imagen_original is None:
+                print("Primero debes cargar una imagen. Usa la opción '1' para cargar una imagen.")
+            else:
+                guardar_imagen(imagen_modificada)
+        elif opcion == "10":
             print("Hasta luego")
             break
         else:
