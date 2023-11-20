@@ -55,85 +55,6 @@ def mostrar_imagen_matplotlib(imagen_pil, titulo="Imagen Redimensionada"):
     plt.axis('off')  # Desactivar ejes
     plt.show()
 
-
-def ajustar_contraste_histograma(imagen_pil):
-    try:
-        # Convertir la imagen de Pillow a una matriz numpy
-        img_np = np.array(imagen_pil)
-
-        # Calcular el histograma y la función de distribución acumulativa (CDF) de cada canal de color original
-        hist_canal_r_orig, bins_canal_r_orig = np.histogram(img_np[:, :, 0].flatten(), 256, [0, 256])
-        hist_canal_g_orig, bins_canal_g_orig = np.histogram(img_np[:, :, 1].flatten(), 256, [0, 256])
-        hist_canal_b_orig, bins_canal_b_orig = np.histogram(img_np[:, :, 2].flatten(), 256, [0, 256])
-
-        cdf_canal_r_orig = hist_canal_r_orig.cumsum()
-        cdf_canal_g_orig = hist_canal_g_orig.cumsum()
-        cdf_canal_b_orig = hist_canal_b_orig.cumsum()
-
-        cdf_canal_r_normalized_orig = cdf_canal_r_orig * float(hist_canal_r_orig.max()) / cdf_canal_r_orig.max()
-        cdf_canal_g_normalized_orig = cdf_canal_g_orig * float(hist_canal_g_orig.max()) / cdf_canal_g_orig.max()
-        cdf_canal_b_normalized_orig = cdf_canal_b_orig * float(hist_canal_b_orig.max()) / cdf_canal_b_orig.max()
-
-        # Ecualizar cada canal de color independientemente
-        canal_r_ecualizado = cv2.equalizeHist(img_np[:, :, 0])
-        canal_g_ecualizado = cv2.equalizeHist(img_np[:, :, 1])
-        canal_b_ecualizado = cv2.equalizeHist(img_np[:, :, 2])
-
-        # Calcular el histograma y la función de distribución acumulativa (CDF) de cada canal de color ecualizado
-        hist_canal_r, bins_canal_r = np.histogram(canal_r_ecualizado.flatten(), 256, [0, 256])
-        hist_canal_g, bins_canal_g = np.histogram(canal_g_ecualizado.flatten(), 256, [0, 256])
-        hist_canal_b, bins_canal_b = np.histogram(canal_b_ecualizado.flatten(), 256, [0, 256])
-
-        cdf_canal_r = hist_canal_r.cumsum()
-        cdf_canal_g = hist_canal_g.cumsum()
-        cdf_canal_b = hist_canal_b.cumsum()
-
-        cdf_canal_r_normalized = cdf_canal_r * float(hist_canal_r.max()) / cdf_canal_r.max()
-        cdf_canal_g_normalized = cdf_canal_g * float(hist_canal_g.max()) / cdf_canal_g.max()
-        cdf_canal_b_normalized = cdf_canal_b * float(hist_canal_b.max()) / cdf_canal_b.max()
-
-        # Mostrar las imágenes y los histogramas en una misma figura
-        fig, axs = plt.subplots(2, 2, figsize=(15, 15))
-
-        # Mostrar la imagen original
-        axs[0, 0].imshow(img_np)
-        axs[0, 0].set_title("Imagen Original")
-        axs[0, 0].axis('off')
-
-        # Mostrar el histograma y el CDF de los canales de color originales
-        axs[0, 1].hist(img_np[:, :, 0].flatten(), 256, [0, 256], color="r", alpha=0.5, label="Rojo")
-        axs[0, 1].hist(img_np[:, :, 1].flatten(), 256, [0, 256], color="g", alpha=0.5, label="Verde")
-        axs[0, 1].hist(img_np[:, :, 2].flatten(), 256, [0, 256], color="b", alpha=0.5, label="Azul")
-        axs[0, 1].plot(cdf_canal_r_normalized_orig, color="r", label="Rojo (CDF)")
-        axs[0, 1].plot(cdf_canal_g_normalized_orig, color="g", label="Verde (CDF)")
-        axs[0, 1].plot(cdf_canal_b_normalized_orig, color="b", label="Azul (CDF)")
-        axs[0, 1].set_title("Histogramas y CDF de Canales de Color Original")
-        axs[0, 1].legend()
-
-        # Mostrar la imagen ecualizada
-        axs[1, 0].imshow(np.stack((canal_r_ecualizado, canal_g_ecualizado, canal_b_ecualizado), axis=-1))
-        axs[1, 0].set_title("Imagen Ecualizada")
-        axs[1, 0].axis('off')
-
-        # Mostrar el histograma y el CDF de los canales de color ecualizados
-        axs[1, 1].hist(canal_r_ecualizado.flatten(), 256, [0, 256], color="r", alpha=0.5, label="Rojo")
-        axs[1, 1].hist(canal_g_ecualizado.flatten(), 256, [0, 256], color="g", alpha=0.5, label="Verde")
-        axs[1, 1].hist(canal_b_ecualizado.flatten(), 256, [0, 256], color="b", alpha=0.5, label="Azul")
-        axs[1, 1].plot(cdf_canal_r_normalized, color="r", label="Rojo (CDF)")
-        axs[1, 1].plot(cdf_canal_g_normalized, color="g", label="Verde (CDF)")
-        axs[1, 1].plot(cdf_canal_b_normalized, color="b", label="Azul (CDF)")
-        axs[1, 1].set_title("Histogramas y CDF de Canales de Color Ecualizado")
-        axs[1, 1].legend()
-
-        plt.show()
-
-        img_ecualizada_rgb = cv2.merge([canal_r_ecualizado, canal_g_ecualizado, canal_b_ecualizado])
-        img_ecualizada_pil = Image.fromarray(img_ecualizada_rgb)
-        return img_ecualizada_pil
-    except Exception as e:
-        print(f"Error al ajustar el contraste: {e}")
-        return None
-
 def aplicar(matriz, relativa):
     matriz = matriz.astype(np.float32) * relativa.astype(np.float32)
     matriz = np.round(matriz).astype(np.uint8)
@@ -190,6 +111,7 @@ def ajustar_contraste_histograma_propio(img_cv2):
     except Exception as e:
         print(f"Error al ajustar el contraste: {e}")
         return None
+
     
 def mostrar_plt_de_filtros(imagen_pil):
     try:
